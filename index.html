@@ -1,0 +1,35 @@
+<html>
+
+<body>
+	<canvas width="500" height="500"></canvas>
+	<script>
+		const size = 100;
+		const v = new Array(size);
+		const i = new Array(size);
+		for (var count = 0; count < size; count++) {
+			v[count] = 0;
+			i[count] = 0;
+		}
+		var dt = 0.1;
+		var t = 0;
+		var RL = 0;
+		function step() {
+			t += dt;
+			v[0] = 100;
+			const v1 = new Array(size);
+			const i1 = new Array(size);
+			for (var count = 0; count < size; count++) {
+				v1[count] = 0;
+				i1[count] = 0;
+			}
+			for (var count = 1; count < size; count++) {
+				v1[count] -= (i1[count] - i1[count - 1])*dt;
+				i1[count] -= (v1[count] - v1[count - 1])*dt;
+			}
+			
+
+		}
+	</script>
+</body>
+
+</html>
