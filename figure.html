@@ -9,17 +9,18 @@
 
 	<!-- Latest compiled JavaScript -->
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-	<title>telegrapher's equation simulator</title>
+	<title>figure.html</title>
 </head>
 
 <body>
-	<canvas width="600" height="500" id="canvas"></canvas>
+	<canvas width="600" height="1000" id="canvas"></canvas>
 	<button class="btn btn-primary" onclick="reset();">reset</button>
 	<button class="btn" onclick='boundary="shorted";'>shorted boundary</button>
 	<button class="btn" onclick='boundary="free";'>free boundary</button>
 	<button class="btn" onclick='boundary="75ohm";'>75ohm boundary</button>
 	<script>
 		const size = 100;
+		var framecount = 0;
 		const v = new Array(size);
 		const dvdt = new Array(size);
 		console.log(dvdt);
@@ -43,8 +44,12 @@
 				i[count] = 0;
 				dvdt[count] = 0;
 			}
+			for (var count = 0; count < 40000; count++) {
+				step();
+			}
 		}
 		function step() {
+			framecount++;
 			t += dt;
 			v[0] = A;//Math.sin(t) * 10;
 			switch (boundary) {
@@ -70,61 +75,57 @@
 			for (var count = 0; count < size; count++) {
 				v[count] += dvdt[count] * dt;
 			}
+			if (framecount % 5000 == 2500) {
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				ctx.clearRect(0, 0, 500, 500);
+				for (var count = 1; count < size; count++) {
+					ctx.fillRect(count * 5, 100 - v[count], 3, 3);
+				}
 
-			var canvas = document.getElementById("canvas");
-			var ctx = canvas.getContext("2d");
-			ctx.clearRect(0, 0, 500, 500);
-			for (var count = 1; count < size; count++) {
-				ctx.fillRect(count * 5, 100 - v[count], 3, 3);
+				for (var count = 1; count < size; count++) {
+					//var current=
+					ctx.fillRect(count * 5, 100 - v[count], 3, 3);
+				}
+
+				ctx.lineWidth = 0.5;
+				ctx.strokeStyle = "#f00";
+				ctx.beginPath();
+				for (var count = 1; count < size; count++) {
+					//var current=
+					//ctx.fillRect(count * 5,100 + i[count], 3, 3);
+					ctx.moveTo(count * 5, 100 - i[count] + 2);
+					ctx.lineTo(count * 5, 100 - i[count] - 2);
+					ctx.lineTo(count * 5 - 3, 100 - i[count]);
+					ctx.lineTo(count * 5, 100 - i[count] + 2);
+					//ctx.closePath();
+				}
+				ctx.stroke();
+				ctx.strokeStyle = "#888";
+				ctx.lineWidth = 1;
+				ctx.beginPath();
+				ctx.moveTo(0, 100);
+				ctx.lineTo(500, 100);
+				ctx.moveTo(0, 100 + A);
+				ctx.lineTo(500, 100 + A);
+				ctx.moveTo(0, 100 + A * 2);
+				ctx.lineTo(500, 100 + A * 2);
+				ctx.moveTo(0, 100 - A);
+				ctx.lineTo(500, 100 - A);
+				ctx.moveTo(0, 100 - A * 2);
+				ctx.lineTo(500, 100 - A * 2);
+				ctx.stroke();
+
+				ctx.font = "20px Arial";
+				ctx.fillText("E", 510, 105 - A);
+				ctx.fillText("-E", 510, 110 + A);
+				ctx.fillStyle = "#f00";
+				ctx.fillText("I", 550, 105 - A);
+				ctx.fillText("-I", 550, 110 + A);
+				ctx.fillStyle = "#000";
+				ctx.translate(0, 200);
 			}
-
-			for (var count = 1; count < size; count++) {
-				//var current=
-				ctx.fillRect(count * 5, 100 - v[count], 3, 3);
-			}
-
-			ctx.lineWidth = 0.5;
-			ctx.strokeStyle = "#f00";
-			ctx.beginPath();
-			for (var count = 1; count < size; count++) {
-				//var current=
-				//ctx.fillRect(count * 5,100 + i[count], 3, 3);
-				ctx.moveTo(count * 5, 100 - i[count] + 2);
-				ctx.lineTo(count * 5, 100 - i[count] - 2);
-				ctx.lineTo(count * 5 - 3, 100 - i[count]);
-				ctx.lineTo(count * 5, 100 - i[count] + 2);
-				//ctx.closePath();
-			}
-			ctx.stroke();
-
-			ctx.strokeStyle = "#888";
-			ctx.lineWidth = 1;
-			ctx.beginPath();
-			ctx.moveTo(0, 100);
-			ctx.lineTo(500, 100);
-			ctx.moveTo(0, 100 + A);
-			ctx.lineTo(500, 100 + A);
-			ctx.moveTo(0, 100 + A * 2);
-			ctx.lineTo(500, 100 + A * 2);
-			ctx.moveTo(0, 100 - A);
-			ctx.lineTo(500, 100 - A);
-			ctx.moveTo(0, 100 - A * 2);
-			ctx.lineTo(500, 100 - A * 2);
-			ctx.stroke();
-
-			ctx.font = "20px Arial";
-			ctx.fillText("E", 510, 105 - A);
-			ctx.fillText("-E", 510, 110 + A);
-			ctx.fillStyle = "#f00";
-			ctx.fillText("I", 550, 105 - A);
-			ctx.fillText("-I", 550, 110 + A);
-			ctx.fillStyle = "#000";
 		}
-		setInterval(function () {
-			for (var count = 0; count < 50; count++) {
-				step();
-			}
-		}, 10);
 	</script>
 </body>
 
